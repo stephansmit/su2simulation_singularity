@@ -22,6 +22,10 @@ class SU2Simulation(Simulation):
         self.image_name='su2_container.sif'
         self.image_url = 'shub://stephansmit/su2_containers:fork_dev'
         self.restart_dir = 'restart_files'
+    
+    def rerun_with_lower_cfl(self, cmd, cores, cfg, log):
+        cfg.content['CFL_NUMBER']=0.5*cfg.content['CFL_NUMBER']
+        self.run(cmd, cores, cfg, log)
 
     def run(self, cmd, cores, cfg, log):
         self._pull_image()
