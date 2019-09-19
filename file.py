@@ -24,13 +24,21 @@ class ConfigFile(File):
     def write(self):
         self._write_file()
 
-    def _write_zones(self):
-        pass
-
-
-class SU2MultiConfigFile(ConfigFile):
-    def __init__(self, fname, workdir, cfgdir, rotation_speed):
+class SU2ConfigFile(ConfigFile):
+    def __init__(self, fname, workdir, cfgdir):
         ConfigFile.__init__(self, fname, workdir, cfgdir)
+
+    def set_second_order(self):
+        self.content['MUSCL_FLOW']="YES"
+        self.content['MUSCL_FLOW']="YES"
+
+    def set_first_order(self):
+        self.content['MUSCL_FLOW']="NO"
+        self.content['MUSCL_FLOW']="NO"
+
+class SU2MultiConfigFile(SU2ConfigFile):
+    def __init__(self, fname, workdir, cfgdir, rotation_speed):
+        SU2ConfigFile.__init__(self, fname, workdir, cfgdir)
         self.zone1= ConfigFile("zone_1.cfg", workdir, cfgdir)
         self.zone1.content['GRID_MOVEMENT']='NONE'
         self.zone2 = ConfigFile("zone_2.cfg", self.workdir, cfgdir)

@@ -8,12 +8,12 @@ class Simulation(object):
         self.case_dir = case_dir
         self.image_dir= image_dir
 
-    def run(self):
-        pass
-
     def _pull_image(self):
         client.pull(image=self.image_url,name=self.image_name, pull_folder=self.image_dir)
         return
+
+    def run(self):
+        raise NotImplementedError
 
 class SU2Simulation(Simulation):
     def __init__(self, case_dir, image_dir, mesh_dir):
@@ -22,7 +22,6 @@ class SU2Simulation(Simulation):
         self.image_name='su2_container.sif'
         self.image_url = 'shub://stephansmit/su2_containers:fork_dev'
         self.restart_dir = 'restart_files'
-
 
     def run(self, cmd, cores, cfg, log):
         self._pull_image()
