@@ -32,6 +32,12 @@ class Case(object):
        pass
 
 
+class SU2FOSOCase(Case):
+    def __init__(self, cname, work_dir, image_dir, mesh_dir):
+       SU2Case.__init__(self, cname, work_dir, image_dir)
+       self.cmds = ["SU2_CFD", "SU2_CFD", "SU2_SOL"]
+
+
 class SU2Case(Case):
     def __init__(self, cname, work_dir, image_dir, mesh_dir):
        Case.__init__(self, cname, work_dir, image_dir)
@@ -42,6 +48,11 @@ class SU2Case(Case):
         for i, cmd in enumerate(self.cmds):
            sim = SU2Simulation(self.case_dir, self.image_dir, self.mesh_dir)
            sim.run(cmd, 6, self.cfgs[i], self.logs[i])
+
+    def set_logs(self):
+       self.logs = [LogFile(self.fname+'_fo.log',self.case_dir, self.log_dir),
+                    LogFile(self.fname+'_so.log',self.case_dir, self.log_dir),
+                    LogFile(self.fname+'_sol.og',self.case_dir, self.log_dir)]
 
 class SU2TriogenTurbineFOSOCase(SU2Case):
     def __init__(self, cname, work_dir, image_dir, mesh_dir, rotation_speed):
@@ -62,7 +73,7 @@ class SU2TriogenTurbineFOSOCase(SU2Case):
        cfg_fo.content['CFL_NUMBER']=1.0
        cfg_so = SU2MultiConfigFile(self.fname+'_so.cfg', self.case_dir, self.cfg_dir, self.rotation_speed)
        cfg_so.initialize('turbine.template.cfg')
-       cfg_so.content['RESTART_SOL']="NO"
+       cfg_so.content['RESTART_SOL']="YES"
        cfg_so.content['MUSCL_FLOW']="YES"
        cfg_so.content['MUSCL_TURB']="YES"
        cfg_so.content['EXT_ITER']=1
@@ -71,10 +82,6 @@ class SU2TriogenTurbineFOSOCase(SU2Case):
        cfg_so.content['CFL_NUMBER']=1.0
        self.cfgs = [cfg_fo, cfg_so, cfg_so]
 
-    def set_logs(self):
-       self.logs = [LogFile(self.fname+'_fo.log',self.case_dir, self.log_dir),
-                    LogFile(self.fname+'_so.log',self.case_dir, self.log_dir),
-                    LogFile(self.fname+'_sol.og',self.case_dir, self.log_dir)]
 
 class SU2TriogenTurbineCase(SU2Case):
     def __init__(self, cname, work_dir, image_dir, mesh_dir, rotation_speed):
@@ -96,7 +103,6 @@ class SU2TriogenStatorCase(SU2Case):
        self.fname = 'stator'
        SU2Case.__init__(self, cname, work_dir, image_dir, mesh_dir)
 
-
     def set_cfgs(self):
        cfg = ConfigFile(self.fname+'.cfg', self.case_dir, self.cfg_dir)
        cfg.initialize('stator.template.cfg')
@@ -104,4 +110,31 @@ class SU2TriogenStatorCase(SU2Case):
        cfg.content['SOLUTION_FLOW_FILENAME']='stator.dat'
        self.cfgs = [cfg, cfg]
 
+class SU2TriogenStatorFOSOCase(SU2Case):
+    def __init__(self, cname, work_dir, image_dir, mesh_dir):
+       self.fname = 'stator'
+       SU2Case.__init__(self, cname, work_dir, image_dir, mesh_dir)
+       self.cmds = ["SU2_CFD", "SU2_CFD", "SU2_SOL"]
+
+
+    def set_cfgs(self):
+       cfg_fo = ConfigFile(self.fname+'_fo.cfg', self.case_dir, self.cfg_dir)
+       cfg_fo.initialize('stator.template.cfg')
+       cfg_fo.content['RESTART_SOL']="NO"
+       cfg_fo.content['MUSCL_FLOW']="NO"
+       cfg_fo.content['MUSCL_TURB']="NO"
+       cfg_fo.content['EXT_ITER']=1
+       cfg_fo.content['SOLUTION_FLOW_FILENAME']='stator_fo.dat'
+       cfg_fo.content['RESTART_FLOW_FILENAME']='stator_fo.dat'
+       cfg_fo.content['CFL_NUMBER']=1.0
+       cfg_so = ConfigFile(self.fname+'_so.cfg', self.case_dir, self.cfg_dir)
+       cfg_so.initialize('stator.template.cfg')
+       cfg_so.content['RESTART_SOL']="YES"
+       cfg_so.content['MUSCL_FLOW']="YES"
+       cfg_so.content['MUSCL_TURB']="YES"
+       cfg_so.content['EXT_ITER']=1
+       cfg_so.content['RESTART_FLOW_FILENAME']='stator_so.dat'
+       cfg_so.content['SOLUTION_FLOW_FILENAME']='stator_fo.dat'
+       cfg_so.content['CFL_NUMBER']=1.0
+       self.cfgs = [cfg_fo, cfg_so, cfg_so]
 
