@@ -6,9 +6,6 @@ class File(object):
         self.fname = os.path.join(filedir, fname)
         self.content = {}
 
-    def write(self):
-        pass
-
 class ConfigFile(File):
     def __init__(self, fname, workdir, cfgdir):
         File.__init__(self, fname, workdir, cfgdir)
@@ -18,34 +15,35 @@ class ConfigFile(File):
             for line in f:
                 if line[0].isupper():
                     self.content[line.split('=')[0]]=line.split('=')[1].strip()
-    def _write_zones(self):
-        pass
 
-    def write(self):
-        self._write_zones()
+    def _write_file(self):
         with open(os.path.join(self.workdir, self.fname), 'w') as f: 
             for key, value in self.content.items():
                 f.write("=".join([key, str(value)])+'\n')
 
+    def write(self):
+        self._write_file()
+
+    def _write_zones(self):
+        pass
+
+
 class SU2MultiConfigFile(ConfigFile):
     def __init__(self, fname, workdir, cfgdir, rotation_speed):
         ConfigFile.__init__(self, fname, workdir, cfgdir)
-        zone1= ConfigFile("zone_1.cfg", workdir, cfgdir)
-        zone1.content['GRID_MOVEMENT']='NONE'
-        zone2 = ConfigFile("zone_2.cfg", self.workdir, cfgdir)
-        zone2.content['GRID_MOVEMENT']='ROTATING_FRAME'
-        zone2.content['MACH_MOTION']=0.35
-        zone2.content['MOTION_ORIGIN']='0.0 0.0 0.0'
-        zone2.content['ROTATION_RATE'] ='0.0 0.0 '+str(rotation_speed)
-        self.zones = [zone1, zone2]
+        self.zone1= ConfigFile("zone_1.cfg", workdir, cfgdir)
+        self.zone1.content['GRID_MOVEMENT']='NONE'
+        self.zone2 = ConfigFile("zone_2.cfg", self.workdir, cfgdir)
+        self.zone2.content['GRID_MOVEMENT']='ROTATING_FRAME'
+        self.zone2.content['MACH_MOTION']=0.35
+        self.zone2.content['MOTION_ORIGIN']='0.0 0.0 0.0'
+        self.zone2.content['ROTATION_RATE'] ='0.0 0.0 '+str(rotation_speed)
    
-    def _write_zones(self):
-        for z in self.zones:
-           with open(os.path.join(self.workdir, z.fname), 'w') as f: 
-                for key, value in self.content.items():
-                    f.write("=".join([key, str(value)])+'\n')
-
-
+    def write(self):
+        self._write_file()
+        self.zone1._write_file()
+        self.zone2._write_file()
+    
 class LogFile(File):
     def __init__(self, fname, workdir, logdir):
         File.__init__(self, fname, workdir, logdir)
