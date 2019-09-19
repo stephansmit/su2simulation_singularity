@@ -1,6 +1,6 @@
 from file import *
 from simulation import SU2Simulation
-from case import su2case
+from case import Case
 
 class SU2Case(Case):
     def __init__(self, cname, work_dir, image_dir, mesh_dir):
@@ -93,7 +93,7 @@ class SU2TriogenStatorFOSOCase(SU2FOSOCase):
        SU2FOSOCase.__init__(self, cname, work_dir, image_dir, mesh_dir)
 
     def set_cfgs(self):
-       cfg_fo = ConfigFile(self.fname+'_fo.cfg', self.case_dir, self.cfg_dir)
+       cfg_fo = SU2ConfigFile(self.fname+'_fo.cfg', self.case_dir, self.cfg_dir)
        cfg_fo.initialize('stator.template.cfg')
        cfg_fo.content['RESTART_SOL']="NO"
        cfg_fo.content['EXT_ITER']=1
@@ -101,7 +101,7 @@ class SU2TriogenStatorFOSOCase(SU2FOSOCase):
        cfg_fo.content['RESTART_FLOW_FILENAME']='stator_fo.dat'
        cfg_fo.content['CFL_NUMBER']=1.0
        cfg_fo.set_first_order()
-       cfg_so = ConfigFile(self.fname+'_so.cfg', self.case_dir, self.cfg_dir)
+       cfg_so = SU2ConfigFile(self.fname+'_so.cfg', self.case_dir, self.cfg_dir)
        cfg_so.initialize('stator.template.cfg')
        cfg_so.content['RESTART_SOL']="YES"
        cfg_so.content['EXT_ITER']=1

@@ -1,6 +1,8 @@
 turbine.template*
 stator.template*
 *mesh
+turbine/
+stator/
 images
 # Byte-compiled / optimized / DLL files
 __pycache__/

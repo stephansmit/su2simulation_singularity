@@ -12,7 +12,7 @@ class Case(object):
 
     def create_dir(self):
         os.system('mkdir -p ' + self.case_dir)
-        os.system('mkdir -p ' + os.path.join(self.case_dir,self.cfg_dir))
+        os.system('mkdir -p ' + os.path.join(self.case_dir, self.cfg_dir))
         os.system('mkdir -p ' + os.path.join(self.case_dir, self.log_dir))
 
     def initialize(self):
@@ -27,5 +27,8 @@ class Case(object):
         raise NotImplementedError
 
     def run(self, ncores):
+        raise NotImplementedError
+
+    def run_return(self, ncores):
         raise NotImplementedError
 
