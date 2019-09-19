@@ -1,4 +1,5 @@
 import os
+import math
 class File(object):
     def __init__(self, fname, workdir, filedir):
         self.filedir = filedir 
@@ -37,7 +38,7 @@ class SU2ConfigFile(ConfigFile):
         self.content['MUSCL_FLOW']="NO"
 
 class SU2MultiConfigFile(SU2ConfigFile):
-    def __init__(self, fname, workdir, cfgdir, rotation_speed):
+    def __init__(self, fname, workdir, cfgdir):
         SU2ConfigFile.__init__(self, fname, workdir, cfgdir)
         self.zone1= ConfigFile("zone_1.cfg", workdir, cfgdir)
         self.zone1.content['GRID_MOVEMENT']='NONE'
@@ -45,7 +46,14 @@ class SU2MultiConfigFile(SU2ConfigFile):
         self.zone2.content['GRID_MOVEMENT']='ROTATING_FRAME'
         self.zone2.content['MACH_MOTION']=0.35
         self.zone2.content['MOTION_ORIGIN']='0.0 0.0 0.0'
+        self.zone2.content['ROTATION_RATE'] ='0.0 0.0 '+str(426*math.pi*2)
+
+    def set_rotational_speed(self, rotation_speed):
         self.zone2.content['ROTATION_RATE'] ='0.0 0.0 '+str(rotation_speed)
+
+    def set_number_blades(self, nblades):
+        self.content['MARKER_PERIODIC']= '(per_1, per_2, 0.0, 0.0, 0.0, 0.0, 0.0, -20, 0.0, 0.0, 0.0, ' + \
+                                         'per_5, per_6, 0.0, 0.0, 0.0, 0.0, 0.0,'+str(360./float(nblades))+', 0.0, 0.0, 0.0)'
    
     def write(self):
         self._write_file()
