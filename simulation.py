@@ -8,7 +8,6 @@ class Simulation(object):
         self.case_dir = case_dir
         self.image_dir= image_dir
 
-
     def run(self):
         pass
 
