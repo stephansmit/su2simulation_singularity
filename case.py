@@ -10,22 +10,22 @@ class Case(object):
        self.set_cfgs()
        self.set_logs()
 
-
     def create_dir(self):
-       os.system('mkdir ' + self.case_dir)
-       os.system('mkdir ' + os.path.join(self.case_dir,self.cfg_dir))
-       os.system('mkdir ' + os.path.join(self.case_dir, self.log_dir))
+       os.system('mkdir -p ' + self.case_dir)
+       os.system('mkdir -p ' + os.path.join(self.case_dir,self.cfg_dir))
+       os.system('mkdir -p ' + os.path.join(self.case_dir, self.log_dir))
 
+    def initialize(self):
+        self.create_dir()
+        for cfg in self.cfgs:
+            cfg.write()
     def set_cfgs(self):
        pass
     
     def set_logs(self):
         pass
 
-    def initialize(self):
-        self.create_dir()
-        for cfg in self.cfgs:
-            cfg.write()
+
 
     def run(self, ncores):
         pass
@@ -84,7 +84,6 @@ class SU2TriogenStatorCase(SU2Case):
        self.cfgs = [cfg, cfg]
 
 
-
 class SU2TriogenTurbineFOSOCase(SU2FOSOCase):
     def __init__(self, cname, work_dir, image_dir, mesh_dir, rotation_speed):
        self.rotation_speed = rotation_speed
@@ -107,6 +106,7 @@ class SU2TriogenTurbineFOSOCase(SU2FOSOCase):
        cfg_so.content['MUSCL_FLOW']="YES"
        cfg_so.content['MUSCL_TURB']="YES"
        cfg_so.content['EXT_ITER']=1
+       cfg_so.content['RAMP_OUTLET_PRESSURE']="NO"
        cfg_so.content['RESTART_FLOW_FILENAME']='turbine_so.dat'
        cfg_so.content['SOLUTION_FLOW_FILENAME']='turbine_fo.dat'
        cfg_so.content['CFL_NUMBER']=1.0
@@ -133,6 +133,7 @@ class SU2TriogenStatorFOSOCase(SU2FOSOCase):
        cfg_so.content['MUSCL_FLOW']="YES"
        cfg_so.content['MUSCL_TURB']="YES"
        cfg_so.content['EXT_ITER']=1
+       cfg_so.content['RAMP_OUTLET_PRESSURE']="NO"
        cfg_so.content['RESTART_FLOW_FILENAME']='stator_so.dat'
        cfg_so.content['SOLUTION_FLOW_FILENAME']='stator_fo.dat'
        cfg_so.content['CFL_NUMBER']=1.0
