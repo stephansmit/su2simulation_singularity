@@ -71,11 +71,12 @@ class SU2TriogenTurbineFOSOCase(SU2FOSOCase):
     def set_cfgs(self):
        cfg_fo = SU2MultiConfigFile(self.fname+'_fo.cfg', self.case_dir, self.cfg_dir)
        cfg_fo.initialize('turbine.template.cfg')
-       cfg_fo.content['RESTART_SOL']="NO"
+       cfg_fo.content['RESTART_SOL']="YES"
        cfg_fo.content['EXT_ITER']=1
        cfg_fo.content['SOLUTION_FLOW_FILENAME']='turbine_fo.dat'
        cfg_fo.content['RESTART_FLOW_FILENAME']='turbine_fo.dat'
        cfg_fo.content['CFL_NUMBER']=1.0
+       cfg_fo.content['CONV_FILENAME']='history_fo'
        cfg_fo.set_number_blades(self.nblades)
        cfg_fo.set_rotational_speed(self.rotation_speed)
        cfg_fo.set_first_order()
@@ -87,6 +88,7 @@ class SU2TriogenTurbineFOSOCase(SU2FOSOCase):
        cfg_so.content['RESTART_FLOW_FILENAME']='turbine_so.dat'
        cfg_so.content['SOLUTION_FLOW_FILENAME']='turbine_fo.dat'
        cfg_so.content['CFL_NUMBER']=1.0
+       cfg_so.content['CONV_FILENAME']='history_so'
        cfg_so.set_number_blades(self.nblades)
        cfg_so.set_rotational_speed(self.rotation_speed)
        cfg_so.set_second_order()
