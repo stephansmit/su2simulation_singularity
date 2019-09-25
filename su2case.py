@@ -71,7 +71,7 @@ class SU2TriogenTurbineFOSOCase(SU2FOSOCase):
     def set_cfgs(self):
        cfg_fo = SU2MultiConfigFile(self.fname+'_fo.cfg', self.case_dir, self.cfg_dir)
        cfg_fo.initialize('turbine.template.cfg')
-       cfg_fo.content['RESTART_SOL']="YES"
+       cfg_fo.content['RESTART_SOL']="NO"
        cfg_fo.content['EXT_ITER']=1
        cfg_fo.content['SOLUTION_FLOW_FILENAME']='turbine_fo.dat'
        cfg_fo.content['RESTART_FLOW_FILENAME']='turbine_fo.dat'
