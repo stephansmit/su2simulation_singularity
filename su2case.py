@@ -1,6 +1,11 @@
-from file import *
-from simulation import SU2Simulation
-from case import Case
+try:
+    from file import *
+    from simulation import SU2Simulation
+    from case import Case
+except:
+    from .file import *
+    from .simulation import SU2Simulation
+    from .case import Case
 
 class SU2Case(Case):
     def __init__(self, cname, work_dir, image_dir, mesh_dir):
@@ -100,6 +105,7 @@ class SU2TriogenStatorFOSOCase(SU2FOSOCase):
        cfg_fo.content['SOLUTION_FLOW_FILENAME']='stator_fo.dat'
        cfg_fo.content['RESTART_FLOW_FILENAME']='stator_fo.dat'
        cfg_fo.content['CFL_NUMBER']=1.0
+       cfg_fo.content['CONV_FILENAME']='history_fo'
        cfg_fo.set_first_order()
        cfg_so = SU2ConfigFile(self.fname+'_so.cfg', self.case_dir, self.cfg_dir)
        cfg_so.initialize('stator.template.cfg')
@@ -109,6 +115,7 @@ class SU2TriogenStatorFOSOCase(SU2FOSOCase):
        cfg_so.content['RESTART_FLOW_FILENAME']='stator_so.dat'
        cfg_so.content['SOLUTION_FLOW_FILENAME']='stator_fo.dat'
        cfg_so.content['CFL_NUMBER']=1.0
+       cfg_so.content['CONV_FILENAME']='history_so'
        cfg_so.set_second_order()
        self.cfgs = [cfg_fo, cfg_so, cfg_so]
 

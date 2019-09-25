@@ -1,7 +1,10 @@
 import os
 import subprocess
 from spython.main import Client as client
-from file import *
+try:
+    from file import *
+except:
+    from .file import *
 
 class Simulation(object):
     def __init__(self, case_dir, image_dir):

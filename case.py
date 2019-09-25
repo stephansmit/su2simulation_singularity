@@ -1,6 +1,9 @@
-from file import *
-from simulation import SU2Simulation
-
+try:
+    from file import *
+    from simulation import SU2Simulation
+except:
+    from .file import *
+    from .simulation import SU2Simulation
 class Case(object):
     def __init__(self,cname, work_dir, image_dir):
         self.case_dir = os.path.join(work_dir, cname)
