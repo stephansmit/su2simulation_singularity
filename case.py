@@ -18,8 +18,9 @@ class Case(object):
         os.system('mkdir -p ' + os.path.join(self.case_dir, self.cfg_dir))
         os.system('mkdir -p ' + os.path.join(self.case_dir, self.log_dir))
 
-    def initialize(self):
-        self.create_dir()
+    def initialize(self, mkdir=True):
+        if mkdir:
+           self.create_dir()
         for cfg in self.cfgs:
             cfg.write()
 

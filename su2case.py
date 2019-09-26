@@ -7,6 +7,8 @@ except:
     from .simulation import SU2Simulation
     from .case import Case
 
+
+
 class SU2Case(Case):
     def __init__(self, cname, work_dir, image_dir, mesh_dir):
        Case.__init__(self, cname, work_dir, image_dir)
@@ -91,6 +93,25 @@ class SU2TriogenTurbineFOSOCase(SU2FOSOCase):
        cfg_so.set_rotational_speed(self.rotation_speed)
        cfg_so.set_second_order()
        self.cfgs = [cfg_fo, cfg_so, cfg_so]
+
+class SU2TriogenTurbinePPCase(SU2Case):
+    def __init__(self, cname, work_dir, image_dir, mesh_dir):
+       self.fname = 'turbine'
+       SU2Case.__init__(self, cname, work_dir, image_dir, mesh_dir)
+
+    def set_cfgs(self):
+       cfg_pp = SU2ConfigFile(self.fname + "_sol.cfg", self.case_dir, self.cfg_dir)
+       cfg_pp.initialize(os.path.join(self.case_dir, 'cfg', 'turbine_so.cfg'))
+       cfg_pp.content['EXT_ITER']=1
+       cfg_pp.content['SOLUTION_FLOW_FILENAME']='turbine_so.dat'
+       cfg_pp.content['RESTART_SOL']='YES'
+       cfg_pp.content.pop('DV_PARAM', None)
+       cfg_pp.content.pop('DV_VALUE', None)
+       self.cfgs = [cfg_pp, cfg_pp]
+
+    def set_logs(self):
+       self.logs = [LogFile(self.fname+'_pp.log',self.case_dir, self.log_dir),
+                    LogFile(self.fname+'_sol.log',self.case_dir, self.log_dir)]
 
 class SU2TriogenStatorFOSOCase(SU2FOSOCase):
     def __init__(self, cname, work_dir, image_dir, mesh_dir):
