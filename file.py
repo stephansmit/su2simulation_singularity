@@ -30,11 +30,11 @@ class SU2ConfigFile(ConfigFile):
         ConfigFile.__init__(self, fname, workdir, cfgdir)
 
     def set_second_order(self):
-        self.content['MUSCL_FLOW']="YES"
+        self.content['MUSCL_TURB']="YES"
         self.content['MUSCL_FLOW']="YES"
 
     def set_first_order(self):
-        self.content['MUSCL_FLOW']="NO"
+        self.content['MUSCL_TURB']="NO"
         self.content['MUSCL_FLOW']="NO"
 
 class SU2MultiConfigFile(SU2ConfigFile):
