@@ -200,9 +200,8 @@ class SU2TriogenTurbine3D_FOCase(SU2Case):
         cfg_fo = SU2MultiConfigFile(self.fname+'_fo.cfg', self.case_dir, self.cfg_dir)
         cfg_fo.initialize('turbine.template.cfg')
         cfg_fo.content['RESTART_SOL']="NO"
-        cfg_fo.content['OUTER_ITER']=8000
-        cfg_fo.content['SOLUTION_FLOW_FILENAME']='turbine_fo.dat'
-        cfg_fo.content['RESTART_FLOW_FILENAME']='turbine_fo.dat'
+        cfg_fo.content['SOLUTION_FILENAME']='turbine_fo.dat'
+        cfg_fo.content['RESTART_FILENAME']='turbine_fo.dat'
         cfg_fo.content['VOLUME_FILENAME']='flow_fo'
         cfg_fo.content['MARKER_GILES']="(inflow, TOTAL_CONDITIONS_PT, "+str(self.total_pressure)+","+str(self.total_temperature)+", 1.0, 0.0, 0.0, 0.9, 0.0, outmix, MIXING_OUT, 0.0, 0.0, 0.0, 0.0, 0.0, 0.95, 0.0, inmix, MIXING_IN, 0.0, 0.0, 0.0, 0.0, 0.0, 0.95,0.0, outflow, STATIC_PRESSURE, 20000, 0.0, 0.0, 0.0, 0.0 , 1.0,0.0)"
         cfg_fo.content['CFL_NUMBER']=1.0
