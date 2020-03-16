@@ -37,6 +37,6 @@ class SU2Simulation(Simulation):
         output = client.execute(totalcmd, 
                                 bind=','.join([self.case_dir+":/data", self.mesh_dir+":/mesh"]), 
                                 options=['--pwd','/data', '--cleanenv'], stream=True)
-        with open(log.fname, 'w', buffering=100) as lfile:
+        with open(log.fname, 'w', buffering=10) as lfile:
             for line in output:
                 lfile.write(line)
