@@ -193,7 +193,7 @@ class SU2TriogenTurbine3D_FOCase(SU2Case):
     def run(self,ncores):
         for i, cmd in enumerate(self.cmds):
            sim = SU2Simulation(self.case_dir, self.image_dir, self.mesh_dir)
-           sim.image_url = 'shub://stephansmit/su2_containers:blackbird_v7.0.2'
+           sim.image_url = 'shub://stephansmit/su2_containers:fork_blackbird_v7.0.2'
            sim.run(cmd, ncores, self.cfgs[i], self.logs[i])
 
     def set_cfgs(self):
