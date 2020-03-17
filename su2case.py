@@ -180,6 +180,39 @@ class SU2TriogenStatorFOSOCase(SU2FOSOCase):
        cfg_so.set_second_order()
        self.cfgs = [cfg_fo, cfg_so, cfg_so]
 
+class SU2TriogenStator3D_FOCase(SU2Case):
+    def __init__(self, cname, work_dir, image_dir, mesh_dir, rotation_speed, nblades, total_temperature, total_pressure, outlet_pressure):
+       self.rotation_speed = rotation_speed
+       self.nblades = nblades
+       self.total_temperature = total_temperature
+       self.total_pressure = total_pressure
+       self.outlet_pressure = outlet_pressure
+       self.fname = 'stator'
+       SU2Case.__init__(self, cname, work_dir, image_dir, mesh_dir)
+
+
+    def run(self,ncores):
+        for i, cmd in enumerate(self.cmds):
+           sim = SU2Simulation(self.case_dir, self.image_dir, self.mesh_dir)
+           sim.image_url = 'shub://stephansmit/su2_containers:fork_blackbird_v7.0.2'
+           sim.run(cmd, ncores, self.cfgs[i], self.logs[i])
+
+    def set_cfgs(self):
+        cfg_fo = SU2MultiConfigFile(self.fname+'_fo.cfg', self.case_dir, self.cfg_dir)
+        cfg_fo.initialize('stator.template.cfg')
+        cfg_fo.content['RESTART_SOL']="NO"
+        cfg_fo.content['SOLUTION_FILENAME']='stator_fo.dat'
+        cfg_fo.content['RESTART_FILENAME']='stator_fo.dat'
+        cfg_fo.content['VOLUME_FILENAME']='flow_fo'
+        cfg_fo.content['MARKER_GILES']="(inflow, TOTAL_CONDITIONS_PT, "+str(self.total_pressure)+","+str(self.total_temperature)+", 1.0, 0.0, 0.0, 0.9, 0.0,"+
+                                        "outmix, STATIC_PRESSURE,"+str(self.outlet_pressure)+", 0.0, 0.0, 0.0, 0.0 , 0.95, 0.0)"
+        cfg_fo.content['CFL_NUMBER']=1.0
+        cfg_fo.content['CONV_FILENAME']='history_fo'
+        cfg_fo.set_number_blades(self.nblades)
+        cfg_fo.set_rotational_speed(self.rotation_speed)
+        cfg_fo.set_first_order()
+        self.cfgs = [cfg_fo, cfg_fo]
+
 class SU2TriogenTurbine3D_FOCase(SU2Case):
     def __init__(self, cname, work_dir, image_dir, mesh_dir, rotation_speed, nblades, total_temperature, total_pressure):
        self.rotation_speed = rotation_speed
