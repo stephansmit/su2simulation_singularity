@@ -204,8 +204,7 @@ class SU2TriogenStator3D_FOCase(SU2Case):
         cfg_fo.content['SOLUTION_FILENAME']='stator_fo.dat'
         cfg_fo.content['RESTART_FILENAME']='stator_fo.dat'
         cfg_fo.content['VOLUME_FILENAME']='flow_fo'
-        cfg_fo.content['MARKER_GILES']="(inflow, TOTAL_CONDITIONS_PT, "+str(self.total_pressure)+","+str(self.total_temperature)+", 1.0, 0.0, 0.0, 0.9, 0.0,"+
-                                        "outmix, STATIC_PRESSURE,"+str(self.outlet_pressure)+", 0.0, 0.0, 0.0, 0.0 , 0.95, 0.0)"
+        cfg_fo.content['MARKER_GILES']="(inflow, TOTAL_CONDITIONS_PT, "+str(self.total_pressure)+","+str(self.total_temperature)+", 1.0, 0.0, 0.0, 0.9, 0.0,outmix, STATIC_PRESSURE,"+str(self.outlet_pressure)+", 0.0, 0.0, 0.0, 0.0 , 0.95, 0.0)"
         cfg_fo.content['CFL_NUMBER']=1.0
         cfg_fo.content['CONV_FILENAME']='history_fo'
         cfg_fo.set_number_blades(self.nblades)
