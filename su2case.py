@@ -113,7 +113,7 @@ class SU2TriogenTurbineFOSOCase_WInletConditions(SU2FOSOCase):
        cfg_fo.content['SOLUTION_FLOW_FILENAME']='turbine_fo.dat'
        cfg_fo.content['RESTART_FLOW_FILENAME']='turbine_fo.dat'
        cfg_fo.content['CFL_NUMBER']=1.0
-       cfg_fo.content['MARKER_GILES']="(inflow, TOTAL_CONDITIONS_PT, "+str(self.total_pressure)+","+str(self.total_temperature)+", 1.0, 0.0, 0.0, 0.9, 0.0, outmix, MIXING_OUT, 0.0, 0.0, 0.0, 0.0, 0.0, 0.95, 0.0, inmix, MIXING_IN, 0.0, 0.0, 0.0, 0.0, 0.0, 0.95,0.0, outflow, STATIC_PRESSURE, 20000, 0.0, 0.0, 0.0, 0.0 , 1.0,0.0)"
+       cfg_fo.content['MARKER_GILES']="(inflow, TOTAL_CONDITIONS_PT, "+str(self.total_pressure)+","+str(self.total_temperature)+", 1.0, 0.0, 0.0, 0.9, 0.0, outmix, MIXING_OUT, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.0, inmix, MIXING_IN, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3,0.0, outflow, STATIC_PRESSURE, 20000, 0.0, 0.0, 0.0, 0.0 , .3,0.0)"
        cfg_fo.content['CFL_NUMBER']=1.0
        cfg_fo.content['CONV_FILENAME']='history_fo'
        cfg_fo.set_number_blades(self.nblades)
@@ -123,7 +123,7 @@ class SU2TriogenTurbineFOSOCase_WInletConditions(SU2FOSOCase):
        cfg_so.initialize('turbine.template.cfg')
        cfg_so.content['RESTART_SOL']="YES"
        cfg_so.content['EXT_ITER']=1
-       cfg_so.content['MARKER_GILES']="(inflow, TOTAL_CONDITIONS_PT, "+str(self.total_pressure)+","+str(self.total_temperature)+", 1.0, 0.0, 0.0, 0.9, 0.0, outmix, MIXING_OUT, 0.0, 0.0, 0.0, 0.0, 0.0, 0.95, 0.0, inmix, MIXING_IN, 0.0, 0.0, 0.0, 0.0, 0.0, 0.95,0.0, outflow, STATIC_PRESSURE, 20000, 0.0, 0.0, 0.0, 0.0 , 1.0,0.0)"
+       cfg_so.content['MARKER_GILES']="(inflow, TOTAL_CONDITIONS_PT, "+str(self.total_pressure)+","+str(self.total_temperature)+", 1.0, 0.0, 0.0, 0.9, 0.0, outmix, MIXING_OUT, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.0, inmix, MIXING_IN, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3,0.0, outflow, STATIC_PRESSURE, 20000, 0.0, 0.0, 0.0, 0.0 , .3,0.0)"
        cfg_so.content['RAMP_OUTLET_PRESSURE']="NO"
        cfg_so.content['RESTART_FLOW_FILENAME']='turbine_so.dat'
        cfg_so.content['SOLUTION_FLOW_FILENAME']='turbine_fo.dat'
@@ -205,6 +205,7 @@ class SU2TriogenTurbine3D_FOCase(SU2Case):
         cfg_1iter.content['VOLUME_FILENAME']='flow_fo'
         cfg_1iter.content['RELAXATION_FACTOR_TURB']=0.75
         cfg_1iter.content['RELAXATION_FACTOR_FLOW']=0.75
+        cfg_1iter.content['FREESTREAM_NU_FACTOR']= 30
         cfg_1iter.content['MARKER_GILES']="(inflow, TOTAL_CONDITIONS_PT, "+str(self.total_pressure)+","+str(self.total_temperature)+", 1.0, 0.0, 0.0, 0.9, 0.0, outmix, MIXING_OUT, 0.0, 0.0, 0.0, 0.0, 0.0, 0.95, 0.0, inmix, MIXING_IN, 0.0, 0.0, 0.0, 0.0, 0.0, 0.95,0.0, outflow, STATIC_PRESSURE, 20000, 0.0, 0.0, 0.0, 0.0 , 1.0,0.0)"
         cfg_1iter.content['CFL_NUMBER']=1.0
         cfg_1iter.content['CONV_FILENAME']='history_fo'
@@ -222,6 +223,7 @@ class SU2TriogenTurbine3D_FOCase(SU2Case):
         cfg_fo.set_speed_ramp_coeff(39,10000)
         cfg_fo.content['SOLUTION_FILENAME']='turbine_fo.dat'
         cfg_fo.content['RESTART_FILENAME']='turbine_fo.dat'
+        cfg_fo.content['FREESTREAM_NU_FACTOR']= 3
         cfg_fo.content['VOLUME_FILENAME']='flow_fo'
         cfg_fo.content['RELAXATION_FACTOR_TURB']=0.75
         cfg_fo.content['RELAXATION_FACTOR_FLOW']=0.75
