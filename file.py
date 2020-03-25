@@ -37,11 +37,17 @@ class SU2ConfigFile(ConfigFile):
         self.content['MUSCL_TURB']="NO"
         self.content['MUSCL_FLOW']="NO"
 
+    def set_speed_ramp_coeff(self, iter, max_iter):
+        self.content['RAMP_ROTATING_FRAME_COEFF']="(0.0,"+str(iter)+","+str(max_iter)+")"
+
 class SU2MultiConfigFile(SU2ConfigFile):
     def __init__(self, fname, workdir, cfgdir):
         SU2ConfigFile.__init__(self, fname, workdir, cfgdir)
         self.zone1= ConfigFile("zone_1.cfg", workdir, cfgdir)
-        self.zone1.content['GRID_MOVEMENT']='NONE'
+        self.zone1.content['GRID_MOVEMENT']='ROTATING_FRAME'
+        self.zone1.content['MACH_MOTION']=0.35
+        self.zone1.content['MOTION_ORIGIN']='0.0 0.0 0.0'
+        self.zone1.content['ROTATION_RATE'] ='0.0 0.0 0.0'
         self.zone2 = ConfigFile("zone_2.cfg", self.workdir, cfgdir)
         self.zone2.content['GRID_MOVEMENT']='ROTATING_FRAME'
         self.zone2.content['MACH_MOTION']=0.35
