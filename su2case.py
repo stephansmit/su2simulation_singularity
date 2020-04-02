@@ -200,8 +200,8 @@ class SU2TriogenTurbine3D_FOCase(SU2Case):
         cfg_1iter.content['WRT_SOL_FREQ']=1
         cfg_1iter.content['OUTPUT_WRT_FREQ']=1
         cfg_1iter.content['RESTART_FILENAME']='turbine_fo.dat'
-        cfg_1iter.content['RAMP_ROTATING_FRAME']="NO"
-        cfg_1iter.set_speed_ramp_coeff(39,10000)
+        cfg_1iter.content['RAMP_ROTATING_FRAME']="YES"
+        cfg_1iter.set_speed_ramp_coeff(39,500)
         cfg_1iter.content['VOLUME_FILENAME']='flow_fo'
         cfg_1iter.content['RELAXATION_FACTOR_TURB']=1.0
         cfg_1iter.content['RELAXATION_FACTOR_FLOW']=1.0
@@ -216,13 +216,13 @@ class SU2TriogenTurbine3D_FOCase(SU2Case):
 
         cfg_fo = SU2MultiConfigFile(self.fname+'_fo.cfg', self.case_dir, self.cfg_dir)
         cfg_fo.initialize('turbine.template.cfg')
-        cfg_fo.content['OUTER_ITER']=100000
+        cfg_fo.content['OUTER_ITER']=1001
         cfg_fo.content['WRT_SOL_FREQ']=100
         cfg_fo.content['OUTPUT_WRT_FREQ']=100
         cfg_fo.content['RESTART_SOL']="YES"
         cfg_fo.content['CFL_REDUCTION_TURB']=0.5
-        cfg_fo.content['RAMP_ROTATING_FRAME']="NO"
-        cfg_fo.set_speed_ramp_coeff(39,10000)
+        cfg_fo.content['RAMP_ROTATING_FRAME']="YES"
+        cfg_fo.set_speed_ramp_coeff(39,500)
         cfg_fo.content['SOLUTION_FILENAME']='turbine_fo.dat'
         cfg_fo.content['RESTART_FILENAME']='turbine_fo.dat'
         cfg_fo.content['FREESTREAM_NU_FACTOR']= 3
@@ -236,7 +236,27 @@ class SU2TriogenTurbine3D_FOCase(SU2Case):
         cfg_fo.set_rotational_speed(self.rotation_speed)
         cfg_fo.set_first_order()
 
-        self.cfgs = [cfg_1iter, cfg_fo]
+        cfg_so = SU2MultiConfigFile(self.fname+'_so.cfg', self.case_dir, self.cfg_dir)
+        cfg_so.initialize('turbine.template.cfg')
+        cfg_so.content['OUTER_ITER']=1000000
+        cfg_so.content['WRT_SOL_FREQ']=500
+        cfg_so.content['OUTPUT_WRT_FREQ']=500
+        cfg_so.content['RESTART_SOL']="YES"
+        cfg_so.content['CFL_REDUCTION_TURB']=0.5
+        cfg_so.content['RAMP_ROTATING_FRAME']="NO"
+        cfg_so.content['SOLUTION_FILENAME']='turbine_fo.dat'
+        cfg_so.content['RESTART_FILENAME']='turbine_so.dat'
+        cfg_so.content['FREESTREAM_NU_FACTOR']= 3
+        cfg_so.content['VOLUME_FILENAME']='flow_so'
+        cfg_so.content['RELAXATION_FACTOR_TURB']=1.0
+        cfg_so.content['RELAXATION_FACTOR_FLOW']=1.0
+        cfg_so.content['MARKER_GILES']="(inflow, TOTAL_CONDITIONS_PT, "+str(self.total_pressure)+","+str(self.total_temperature)+", 1.0, 0.0, 0.0, 0.9, 0.0, outmix, MIXING_OUT, 0.0, 0.0, 0.0, 0.0, 0.0, 0.9, 0.0, inmix, MIXING_IN, 0.0, 0.0, 0.0, 0.0, 0.0, 0.9,0.0, outflow, STATIC_PRESSURE, 20000, 0.0, 0.0, 0.0, 0.0 , 0.9,0.0)"
+        cfg_so.content['CFL_NUMBER']=5.0
+        cfg_so.content['CONV_FILENAME']='history_fo'
+        cfg_so.set_number_blades(self.nblades)
+        cfg_so.set_rotational_speed(self.rotation_speed)
+        cfg_so.set_second_order()
+        self.cfgs = [cfg_1iter, cfg_fo, cfg_so]
     
     def run(self,ncores):
        sim = SU2Simulation(self.case_dir, self.image_dir, self.mesh_dir)
@@ -245,8 +265,10 @@ class SU2TriogenTurbine3D_FOCase(SU2Case):
        print("Copying the converged stator")
        os.system('cp '+ os.path.join(self.sol_dir, 'stator_fo_0.dat')+" "+ os.path.join(self.case_dir,"turbine_fo_0.dat") )
        sim.run(self.cmds[1], ncores, self.cfgs[1], self.logs[1])
+       sim.run(self.cmds[2], ncores, self.cfgs[2], self.logs[2])
     
     def set_logs(self):
        self.logs = [LogFile(self.fname+'_1iter.log',self.case_dir, self.log_dir),
-                    LogFile(self.fname+'_fo.log',self.case_dir, self.log_dir)]
+                    LogFile(self.fname+'_fo.log',self.case_dir, self.log_dir),
+                    LogFile(self.fname+'_so.log',self.case_dir, self.log_dir)]
 
