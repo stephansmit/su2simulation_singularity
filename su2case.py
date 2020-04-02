@@ -200,14 +200,15 @@ class SU2TriogenTurbine3D_FOCase(SU2Case):
         cfg_1iter.content['WRT_SOL_FREQ']=1
         cfg_1iter.content['OUTPUT_WRT_FREQ']=1
         cfg_1iter.content['RESTART_FILENAME']='turbine_fo.dat'
-        cfg_1iter.content['RAMP_ROTATING_FRAME']="YES"
+        cfg_1iter.content['RAMP_ROTATING_FRAME']="NO"
         cfg_1iter.set_speed_ramp_coeff(39,10000)
         cfg_1iter.content['VOLUME_FILENAME']='flow_fo'
-        cfg_1iter.content['RELAXATION_FACTOR_TURB']=0.75
-        cfg_1iter.content['RELAXATION_FACTOR_FLOW']=0.75
-        cfg_1iter.content['FREESTREAM_NU_FACTOR']= 30
-        cfg_1iter.content['MARKER_GILES']="(inflow, TOTAL_CONDITIONS_PT, "+str(self.total_pressure)+","+str(self.total_temperature)+", 1.0, 0.0, 0.0, 0.9, 0.0, outmix, MIXING_OUT, 0.0, 0.0, 0.0, 0.0, 0.0, 0.95, 0.0, inmix, MIXING_IN, 0.0, 0.0, 0.0, 0.0, 0.0, 0.95,0.0, outflow, STATIC_PRESSURE, 20000, 0.0, 0.0, 0.0, 0.0 , 1.0,0.0)"
-        cfg_1iter.content['CFL_NUMBER']=1.0
+        cfg_1iter.content['RELAXATION_FACTOR_TURB']=1.0
+        cfg_1iter.content['RELAXATION_FACTOR_FLOW']=1.0
+        cfg_1iter.content['FREESTREAM_NU_FACTOR']= 3
+        cfg_1iter.content['MARKER_GILES']="(inflow, TOTAL_CONDITIONS_PT, "+str(self.total_pressure)+","+str(self.total_temperature)+", 1.0, 0.0, 0.0, 0.9, 0.0, outmix, MIXING_OUT, 0.0, 0.0, 0.0, 0.0, 0.0, 0.9, 0.0, inmix, MIXING_IN, 0.0, 0.0, 0.0, 0.0, 0.0, 0.9,0.0, outflow, STATIC_PRESSURE, 20000, 0.0, 0.0, 0.0, 0.0 , 0.9,0.0)"
+        cfg_1iter.content['CFL_NUMBER']=5.0
+        cfg_1iter.content['CFL_REDUCTION_TURB']=1.0
         cfg_1iter.content['CONV_FILENAME']='history_fo'
         cfg_1iter.set_number_blades(self.nblades)
         cfg_1iter.set_rotational_speed(self.rotation_speed)
@@ -219,16 +220,17 @@ class SU2TriogenTurbine3D_FOCase(SU2Case):
         cfg_fo.content['WRT_SOL_FREQ']=100
         cfg_fo.content['OUTPUT_WRT_FREQ']=100
         cfg_fo.content['RESTART_SOL']="YES"
-        cfg_fo.content['RAMP_ROTATING_FRAME']="YES"
+        cfg_fo.content['CFL_REDUCTION_TURB']=0.5
+        cfg_fo.content['RAMP_ROTATING_FRAME']="NO"
         cfg_fo.set_speed_ramp_coeff(39,10000)
         cfg_fo.content['SOLUTION_FILENAME']='turbine_fo.dat'
         cfg_fo.content['RESTART_FILENAME']='turbine_fo.dat'
         cfg_fo.content['FREESTREAM_NU_FACTOR']= 3
         cfg_fo.content['VOLUME_FILENAME']='flow_fo'
-        cfg_fo.content['RELAXATION_FACTOR_TURB']=0.75
-        cfg_fo.content['RELAXATION_FACTOR_FLOW']=0.75
-        cfg_fo.content['MARKER_GILES']="(inflow, TOTAL_CONDITIONS_PT, "+str(self.total_pressure)+","+str(self.total_temperature)+", 1.0, 0.0, 0.0, 0.9, 0.0, outmix, MIXING_OUT, 0.0, 0.0, 0.0, 0.0, 0.0, 0.95, 0.0, inmix, MIXING_IN, 0.0, 0.0, 0.0, 0.0, 0.0, 0.95,0.0, outflow, STATIC_PRESSURE, 20000, 0.0, 0.0, 0.0, 0.0 , 1.0,0.0)"
-        cfg_fo.content['CFL_NUMBER']=1.0
+        cfg_fo.content['RELAXATION_FACTOR_TURB']=1.0
+        cfg_fo.content['RELAXATION_FACTOR_FLOW']=1.0
+        cfg_fo.content['MARKER_GILES']="(inflow, TOTAL_CONDITIONS_PT, "+str(self.total_pressure)+","+str(self.total_temperature)+", 1.0, 0.0, 0.0, 0.9, 0.0, outmix, MIXING_OUT, 0.0, 0.0, 0.0, 0.0, 0.0, 0.9, 0.0, inmix, MIXING_IN, 0.0, 0.0, 0.0, 0.0, 0.0, 0.9,0.0, outflow, STATIC_PRESSURE, 20000, 0.0, 0.0, 0.0, 0.0 , 0.9,0.0)"
+        cfg_fo.content['CFL_NUMBER']=5.0
         cfg_fo.content['CONV_FILENAME']='history_fo'
         cfg_fo.set_number_blades(self.nblades)
         cfg_fo.set_rotational_speed(self.rotation_speed)
@@ -238,7 +240,7 @@ class SU2TriogenTurbine3D_FOCase(SU2Case):
     
     def run(self,ncores):
        sim = SU2Simulation(self.case_dir, self.image_dir, self.mesh_dir)
-       sim.image_url = 'shub://stephansmit/su2_containers:fork_blackbird_v7.0.2'
+       sim.image_url = 'shub://stephansmit/su2_containers:forkv2_blackbird_v7.0.2'
        sim.run(self.cmds[0], ncores, self.cfgs[0], self.logs[0])
        print("Copying the converged stator")
        os.system('cp '+ os.path.join(self.sol_dir, 'stator_fo_0.dat')+" "+ os.path.join(self.case_dir,"turbine_fo_0.dat") )
