@@ -216,21 +216,26 @@ class SU2TriogenTurbine3D_FOCase(SU2Case):
 
         cfg_fo = SU2MultiConfigFile(self.fname+'_fo.cfg', self.case_dir, self.cfg_dir)
         cfg_fo.initialize('turbine.template.cfg')
-        cfg_fo.content['OUTER_ITER']=1001
+        cfg_fo.content['OUTER_ITER']=10001
         cfg_fo.content['WRT_SOL_FREQ']=100
         cfg_fo.content['OUTPUT_WRT_FREQ']=100
         cfg_fo.content['RESTART_SOL']="YES"
-        cfg_fo.content['CFL_REDUCTION_TURB']=0.5
+        cfg_fo.content['CFL_REDUCTION_TURB']=0.2
+        cfg_fo.content['CFL_NUMBER']=20.0
         cfg_fo.content['RAMP_ROTATING_FRAME']="YES"
-        cfg_fo.set_speed_ramp_coeff(39,500)
+        cfg_fo.set_speed_ramp_coeff(39,1000)
         cfg_fo.content['SOLUTION_FILENAME']='turbine_fo.dat'
         cfg_fo.content['RESTART_FILENAME']='turbine_fo.dat'
-        cfg_fo.content['FREESTREAM_NU_FACTOR']= 3
+        cfg_fo.content['CENTRAL_JACOBIAN_FIX_FACTOR']= 4.0
+        cfg_fo.content['NUM_METHOD_GRAD_RECON']= 'LEAST_SQUARES'
+        cfg_fo.content['LINEAR_SOLVER_PREC']='LU_SGS'
+        cfg_fo.content['LINEAR_SOLVER_ERROR']=1E-2
+        cfg_fo.content['LINEAR_SOLVER_PREC']='ILU'
         cfg_fo.content['VOLUME_FILENAME']='flow_fo'
         cfg_fo.content['RELAXATION_FACTOR_TURB']=1.0
         cfg_fo.content['RELAXATION_FACTOR_FLOW']=1.0
-        cfg_fo.content['MARKER_GILES']="(inflow, TOTAL_CONDITIONS_PT, "+str(self.total_pressure)+","+str(self.total_temperature)+", 1.0, 0.0, 0.0, 0.9, 0.0, outmix, MIXING_OUT, 0.0, 0.0, 0.0, 0.0, 0.0, 0.9, 0.0, inmix, MIXING_IN, 0.0, 0.0, 0.0, 0.0, 0.0, 0.9,0.0, outflow, STATIC_PRESSURE, 20000, 0.0, 0.0, 0.0, 0.0 , 0.9,0.0)"
-        cfg_fo.content['CFL_NUMBER']=5.0
+        cfg_fo.content['MARKER_GILES']="(inflow, TOTAL_CONDITIONS_PT, "+str(self.total_pressure)+","+str(self.total_temperature)+", 1.0, 0.0, 0.0, 0.9, 0.0, outmix, MIXING_OUT, 0.0, 0.0, 0.0, 0.0, 0.0, 0.9, 0.0, inmix, MIXING_IN, 0.0, 0.0, 0.0, 0.0, 0.0, 0.9,0.0, outflow, RADIAL_EQUILIBRIUM, 20000, 0.0, 0.0, 0.0, 0.0 , 0.9,0.0)"
+        cfg_fo.content['CFL_NUMBER']=10.0
         cfg_fo.content['CONV_FILENAME']='history_fo'
         cfg_fo.set_number_blades(self.nblades)
         cfg_fo.set_rotational_speed(self.rotation_speed)
@@ -246,11 +251,17 @@ class SU2TriogenTurbine3D_FOCase(SU2Case):
         cfg_so.content['RAMP_ROTATING_FRAME']="NO"
         cfg_so.content['SOLUTION_FILENAME']='turbine_fo.dat'
         cfg_so.content['RESTART_FILENAME']='turbine_so.dat'
-        cfg_so.content['FREESTREAM_NU_FACTOR']= 3
+        cfg_so.content['USE_ACCURATE_FLUX_JACOBIANS']='YES'
+        cfg_so.content['CENTRAL_JACOBIAN_FIX_FACTOR']= 4.0
+        cfg_so.content['NUM_METHOD_GRAD_RECON']= 'LEAST_SQUARES'
+        cfg_so.content['LINEAR_SOLVER_PREC']='LU_SGS'
+        cfg_so.content['LINEAR_SOLVER_ERROR']=1E-5
+        cfg_so.content['LINEAR_SOLVER_PREC']='ILU'
+        cfg_so.content['GILES_EXTRA_RELAXFACTOR']='(0.01, 0.01)'
         cfg_so.content['VOLUME_FILENAME']='flow_so'
         cfg_so.content['RELAXATION_FACTOR_TURB']=1.0
         cfg_so.content['RELAXATION_FACTOR_FLOW']=1.0
-        cfg_so.content['MARKER_GILES']="(inflow, TOTAL_CONDITIONS_PT, "+str(self.total_pressure)+","+str(self.total_temperature)+", 1.0, 0.0, 0.0, 0.9, 0.0, outmix, MIXING_OUT, 0.0, 0.0, 0.0, 0.0, 0.0, 0.9, 0.0, inmix, MIXING_IN, 0.0, 0.0, 0.0, 0.0, 0.0, 0.9,0.0, outflow, STATIC_PRESSURE, 20000, 0.0, 0.0, 0.0, 0.0 , 0.9,0.0)"
+        cfg_so.content['MARKER_GILES']="(inflow, TOTAL_CONDITIONS_PT, "+str(self.total_pressure)+","+str(self.total_temperature)+", 1.0, 0.0, 0.0, 0.9, 0.0, outmix, MIXING_OUT, 0.0, 0.0, 0.0, 0.0, 0.0, 0.9, 0.0, inmix, MIXING_IN, 0.0, 0.0, 0.0, 0.0, 0.0, 0.9,0.0, outflow, RADIAL_EQUILIBRIUM, 20000, 0.0, 0.0, 0.0, 0.0 , 0.9,0.0)"
         cfg_so.content['CFL_NUMBER']=5.0
         cfg_so.content['CONV_FILENAME']='history_fo'
         cfg_so.set_number_blades(self.nblades)
