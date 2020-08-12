@@ -153,6 +153,44 @@ class SU2TriogenTurbinePPCase(SU2Case):
        self.logs = [LogFile(self.fname+'_pp.log',self.case_dir, self.log_dir),
                     LogFile(self.fname+'_sol.log',self.case_dir, self.log_dir)]
 
+class SU2TriogenTurbineFOSOCase_WInletOutletConditions(SU2FOSOCase):
+    def __init__(self, cname, work_dir, image_dir, mesh_dir, rotation_speed, nblades, total_temperature, total_pressure, static_pressure):
+       self.rotation_speed = rotation_speed
+       self.nblades = nblades
+       self.total_temperature = total_temperature
+       self.total_pressure = total_pressure
+       self.static_pressure = static_pressure
+       self.fname = 'turbine'
+       SU2FOSOCase.__init__(self, cname, work_dir, image_dir, mesh_dir)
+
+    def set_cfgs(self):
+       cfg_fo = SU2MultiConfigFile(self.fname+'_fo.cfg', self.case_dir, self.cfg_dir)
+       cfg_fo.initialize('turbine.template.cfg')
+       cfg_fo.content['RESTART_SOL']="NO"
+       cfg_fo.content['EXT_ITER']=1
+       cfg_fo.content['SOLUTION_FLOW_FILENAME']='turbine_fo.dat'
+       cfg_fo.content['RESTART_FLOW_FILENAME']='turbine_fo.dat'
+       cfg_fo.content['MARKER_GILES']="(inflow, TOTAL_CONDITIONS_PT, "+str(self.total_pressure)+","+str(self.total_temperature)+", 1.0, 0.0, 0.0, 0.9, 0.0, outmix, MIXING_OUT, 0.0, 0.0, 0.0, 0.0, 0.0, 0.95, 0.0, inmix, MIXING_IN, 0.0, 0.0, 0.0, 0.0, 0.0, 0.95,0.0, outflow, STATIC_PRESSURE, "+str(self.static_pressure)+", 0.0, 0.0, 0.0, 0.0 , 1.0,0.0)"
+       cfg_fo.content['CFL_NUMBER']=1.0
+       cfg_fo.content['CONV_FILENAME']='history_fo'
+       cfg_fo.set_number_blades(self.nblades)
+       cfg_fo.set_rotational_speed(self.rotation_speed)
+       cfg_fo.set_first_order()
+       cfg_so = SU2MultiConfigFile(self.fname+'_so.cfg', self.case_dir, self.cfg_dir)
+       cfg_so.initialize('turbine.template.cfg')
+       cfg_so.content['RESTART_SOL']="YES"
+       cfg_so.content['EXT_ITER']=1
+       cfg_so.content['MARKER_GILES']="(inflow, TOTAL_CONDITIONS_PT, "+str(self.total_pressure)+","+str(self.total_temperature)+", 1.0, 0.0, 0.0, 0.9, 0.0, outmix, MIXING_OUT, 0.0, 0.0, 0.0, 0.0, 0.0, 0.95, 0.0, inmix, MIXING_IN, 0.0, 0.0, 0.0, 0.0, 0.0, 0.95,0.0, outflow, STATIC_PRESSURE, "+str(self.static_pressure)+", 0.0, 0.0, 0.0, 0.0 , 1.0,0.0)"
+       cfg_so.content['RAMP_OUTLET_PRESSURE']="NO"
+       cfg_so.content['RESTART_FLOW_FILENAME']='turbine_so.dat'
+       cfg_so.content['SOLUTION_FLOW_FILENAME']='turbine_fo.dat'
+       cfg_so.content['CFL_NUMBER']=1.0
+       cfg_so.content['CONV_FILENAME']='history_so'
+       cfg_so.set_number_blades(self.nblades)
+       cfg_so.set_rotational_speed(self.rotation_speed)
+       cfg_so.set_second_order()
+       self.cfgs = [cfg_fo, cfg_so, cfg_so]
+
 class SU2TriogenStatorFOSOCase(SU2FOSOCase):
     def __init__(self, cname, work_dir, image_dir, mesh_dir):
        self.fname = 'stator'
